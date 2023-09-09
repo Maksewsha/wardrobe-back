@@ -2,7 +2,10 @@ package cfg
 
 import (
 	"errors"
+	"fmt"
 	"os"
+
+	"github.com/joho/godotenv"
 )
 
 type PGConfig struct {
@@ -19,24 +22,28 @@ type Config struct {
 
 func New() (*Config, error) {
 	cfg := &Config{}
+	err := godotenv.Load(".env")
+	if err != nil {
+		return nil, errors.New(fmt.Sprintf("Unable to retrieve config values from .env: %v\n", err))
+	}
 	pgUsername, hasEnv := os.LookupEnv("PG_USERNAME")
-	if hasEnv {
+	if !hasEnv {
 		return nil, errors.New("PG_USERNAME is not set")
 	}
 	pgPassword, hasEnv := os.LookupEnv("PG_PASSWORD")
-	if hasEnv {
+	if !hasEnv {
 		return nil, errors.New("PG_PASSWORD is not set")
 	}
 	pgHost, hasEnv := os.LookupEnv("PG_HOST")
-	if hasEnv {
+	if !hasEnv {
 		return nil, errors.New("PG_HOST is not set")
 	}
 	pgPort, hasEnv := os.LookupEnv("PG_PORT")
-	if hasEnv {
+	if !hasEnv {
 		return nil, errors.New("PG_PORT is not set")
 	}
 	pgDBName, hasEnv := os.LookupEnv("PG_DBNAME")
-	if hasEnv {
+	if !hasEnv {
 		return nil, errors.New("PG_DBNAME is not set")
 	}
 	cfg.PGConfig = &PGConfig{

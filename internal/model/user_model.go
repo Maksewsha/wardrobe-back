@@ -1,13 +1,13 @@
 package model
 
 type UserAuthRequest struct {
-	Login       string
-	Email       string
-	MobilePhone string
-	Password    string
+	Login       string `json:"login"`
+	Email       string `json:"email"`
+	MobilePhone string `json:"mobile_phone"`
+	Password    string `json:"password"`
 }
 
 type UserResponse struct {
-	Login string
-	Email string
+	Login string `json:"login"`
+	Email string `json:"email"`
 }

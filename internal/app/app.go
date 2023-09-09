@@ -3,13 +3,15 @@ package app
 import (
 	"context"
 	"fmt"
-	"log"
 	"os"
 
+	"github.com/gin-gonic/gin"
 	"github.com/jackc/pgx/v5"
 
 	cfg "github.com/maksewsha/wardrobe-back/cfg"
-	rest "github.com/maksewsha/wardrobe-back/internal/web"
+	"github.com/maksewsha/wardrobe-back/internal/repository"
+	"github.com/maksewsha/wardrobe-back/internal/usecases"
+	"github.com/maksewsha/wardrobe-back/internal/web"
 	"github.com/maksewsha/wardrobe-back/pkg/pghelper"
 )
 
@@ -20,7 +22,9 @@ func Start(config *cfg.Config) {
 		os.Exit(1)
 	}
 	defer connection.Close(context.Background())
-	if err := rest.RunRouter(); err != nil {
-		log.Fatal(err)
-	}
+	uc := usecases.NewUserUseCase(repository.NewUserRepository(connection))
+	handlers := web.NewHandlers(uc)
+	r := gin.New()
+	handlers.SetRouter(r)
+	r.Run()
 }

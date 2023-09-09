@@ -1,23 +1,26 @@
 package web
 
 import (
-	"net/http"
-
 	"github.com/gin-gonic/gin"
-	"github.com/maksewsha/wardrobe-back/internal/model"
+	"github.com/maksewsha/wardrobe-back/internal/usecases"
 )
 
-func AddCloth(ctx *gin.Context) {
-	var reqEntity model.ClothDTO
-	if error := ctx.ShouldBindJSON(&reqEntity); error != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{
-			"message": error.Error(),
-		})
-	} else {
-		ctx.Status(http.StatusOK)
+type Handlers struct {
+	userHandlers
+}
+
+func NewHandlers(u usecases.User) *Handlers {
+	return &Handlers{
+		userHandlers: userHandlers{
+			userUseCase: u,
+		},
 	}
 }
 
-func GetClothes(ctx *gin.Context) {
-
+func (h *Handlers) SetRouter(r *gin.Engine) {
+	r.Use(gin.Recovery())
+	supergroup := r.Group("/api")
+	{
+		newUserHandlers(*supergroup, h.userUseCase)
+	}
 }
