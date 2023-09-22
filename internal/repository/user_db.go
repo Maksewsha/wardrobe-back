@@ -2,7 +2,6 @@ package repository
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/jackc/pgx/v5"
 	"github.com/maksewsha/wardrobe-back/internal/model"
@@ -31,7 +30,6 @@ func (userRepo *UserRepository) CreateNewUser(ctx context.Context, user model.Us
 	var id uint64
 	err := userRepo.connection.QueryRow(ctx, "insert into users (login, email, mobile_phone, password_hash) values ($1, $2, $3, $4) returning id", user.Login, user.Email, user.MobilePhone, user.Password).Scan(&id)
 	if err != nil {
-		fmt.Println(err)
 		return nil, err
 	}
 	return &id, nil
